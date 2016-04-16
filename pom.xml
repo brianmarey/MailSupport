@@ -29,6 +29,12 @@
        <artifactId>slf4j-simple</artifactId>
        <version>1.6.4</version>
     </dependency>
+    
+    <dependency>
+       <groupId>com.careydevelopment</groupId>
+       <artifactId>properties-support</artifactId>
+       <version>[0.1,)</version>
+    </dependency>
 	
   </dependencies>
       
