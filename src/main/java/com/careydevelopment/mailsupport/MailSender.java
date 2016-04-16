@@ -1,13 +1,12 @@
 package com.careydevelopment.mailsupport;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.util.Properties;
 
 import javax.mail.Message;
-import javax.mail.PasswordAuthentication;
+import javax.mail.MessagingException;
 import javax.mail.Session;
 import javax.mail.Transport;
+import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
@@ -27,7 +26,7 @@ public class MailSender {
 	private String smtpHost;	
 	private MailAuthenticator authenticator;
 	
-	private MailSender() {
+	private MailSender() throws MailSenderException {
 		try {
 			Properties props = PropertiesFactory.getProperties(PropertiesFile.MAIL_PROPERTIES);
 			
@@ -38,12 +37,12 @@ public class MailSender {
 			authenticator = new MailAuthenticator(user,password);
 		} catch (PropertiesFactoryException pe) {
 			pe.printStackTrace();
-			throw new RuntimeException ("Problem configuring mail system!");
+			throw new MailSenderException ("Problem configuring mail system!");
 		}
 	}
 	
 
-	public static MailSender getInstance() {
+	public static MailSender getInstance() throws MailSenderException {
 		if (INSTANCE == null) {
 			synchronized (MailSender.class) {
 				if (INSTANCE == null) {
@@ -67,24 +66,20 @@ public class MailSender {
 	}
 	
 	
-	public void sendMail(String to, String from, String subject, String body) {	      
-	      try {
-	    	Properties props = getMailProperties();  
-	    	  
-			Session session = Session.getInstance(props, authenticator);
+	public void sendMail(String to, String from, String subject, String body) throws MessagingException, AddressException {	      
+    	Properties props = getMailProperties();  
+    	  
+		Session session = Session.getInstance(props, authenticator);
 
-			Message message = new MimeMessage(session);
-			message.setFrom(new InternetAddress(from));
-			message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to));
-			message.setSubject(subject);
-			message.setText(body);
+		Message message = new MimeMessage(session);
+		message.setFrom(new InternetAddress(from));
+		message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to));
+		message.setSubject(subject);
+		message.setText(body);
 
-			Transport.send(message);
+		Transport.send(message);
 
-			LOGGER.info("Done sending mail to " + to);
-	   	}catch (Exception mex) {
-	         mex.printStackTrace();
-	    }
+		LOGGER.info("Done sending mail to " + to);
 	}	
 	
 	
@@ -94,6 +89,6 @@ public class MailSender {
 		String subject = "A Brand New Test";
 		String body = "Another test";
 		
-		MailSender.getInstance().sendMail(to, from, subject, body);
+		//MailSender.getInstance().sendMail(to, from, subject, body);
 	}
 }
