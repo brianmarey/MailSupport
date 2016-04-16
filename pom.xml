@@ -33,13 +33,13 @@
     <dependency>
        <groupId>com.careydevelopment</groupId>
        <artifactId>properties-support</artifactId>
-       <version>0.1-SNAPSHOT</version>
+       <version>[1.0,)</version>
     </dependency>
 	
   </dependencies>
       
   <build>
-    <finalName>ROOT</finalName>
+    <finalName>mail-support</finalName>
     
     <plugins>
       <plugin>
